@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>면접 평가표 - 엠아이텍</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif; background: #f5f5f5; color: #333; }
+
+    .main-page { max-width: 1400px; margin: 0 auto; background: white; min-height: 100vh; }
+    .header { padding: 20px 40px; background: white; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 100; }
+    .header h1 { font-size: 20px; font-weight: 600; color: #333; }
+    .header-buttons { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+    .header-btn { padding: 8px 16px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; color: #666; font-family: inherit; }
+    .header-btn:hover { background: #f8f8f8; }
+    .header-btn.primary { background: #333; color: white; border-color: #333; }
+    .header-btn.primary:hover { background: #000; }
+    .header-btn.danger { background: white; color: #d32f2f; border-color: #d32f2f; }
+    .header-btn.danger:hover { background: #fff5f5; }
+    .header-btn.ai { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; }
+    .header-btn.ai:hover { opacity: 0.92; }
+
+    .subtitle { padding: 14px 40px; background: #f5f5f5; color: #666; font-size: 13px; border-bottom: 1px solid #e0e0e0; }
+    .candidate-info { padding: 32px 40px; background: white; border-bottom: 1px solid #e0e0e0; }
+    .section-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; color: #333; }
+    .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 20px; margin-bottom: 16px; }
+    .info-field { display: flex; flex-direction: column; gap: 6px; }
+    .info-label { font-size: 13px; font-weight: 500; color: #333; }
+    .info-input, .info-select { padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; background: #f8f8f8; font-family: inherit; }
+    .info-input:focus, .info-select:focus { outline: none; border-color: #666; background: white; }
+
+    .tabs-wrapper { background: white; padding: 0 40px; border-bottom: 1px solid #e0e0e0; overflow-x: auto; }
+    .tabs { display: flex; gap: 8px; }
+    .tab { padding: 12px 20px; background: transparent; border: none; cursor: pointer; font-size: 13px; color: #666; border-bottom: 2px solid transparent; font-weight: 400; white-space: nowrap; font-family: inherit; }
+    .tab:hover { color: #333; }
+    .tab.active { color: #333; font-weight: 500; border-bottom-color: #333; }
+
+    .content { padding: 40px; background: #fafafa; }
+
+    .common-section { margin-bottom: 40px; padding-bottom: 32px; border-bottom: 3px solid #e0e0e0; }
+    .common-section-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .common-section-title { font-size: 16px; font-weight: 600; }
+    .common-section-subtitle { font-size: 12px; opacity: 0.9; margin-top: 4px; }
+
+    .department-section-header { background: #f8f9fa; padding: 16px 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #17a2b8; }
+    .department-section-title { font-size: 16px; font-weight: 600; color: #333; }
+    .department-section-subtitle { font-size: 12px; color: #666; margin-top: 4px; }
+
+    .attribute-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 24px; margin-bottom: 20px; }
+    .attribute-card.common { border-left: 4px solid #667eea; background: linear-gradient(to right, #f8f7ff 0%, white 100%); }
+    .attribute-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px; flex-wrap: wrap; }
+    .attribute-name { color: #17a2b8; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+    .attribute-name.common { color: #667eea; }
+    .common-badge { background: #667eea; color: white; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+
+    .attribute-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .question-bank-btn, .ai-analyze-btn { padding: 6px 14px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 4px; color: #666; font-family: inherit; }
+    .question-bank-btn:hover { background: #f8f8f8; }
+    .ai-analyze-btn { border-color: #764ba2; color: #764ba2; }
+    .ai-analyze-btn:hover { background: #f8f7ff; }
+
+    .question-text { color: #333; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+    .question-text strong { color: #17a2b8; font-weight: 600; }
+
+    .follow-up-section { background: #f8f9fa; border-left: 3px solid #667eea; padding: 12px 16px; margin-top: 12px; margin-bottom: 24px; border-radius: 4px; }
+    .follow-up-title { font-size: 12px; font-weight: 600; color: #667eea; margin-bottom: 8px; }
+    .follow-up-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+    .follow-up-item { font-size: 12px; color: #555; line-height: 1.5; padding-left: 16px; position: relative; }
+    .follow-up-item:before { content: "→"; position: absolute; left: 0; color: #667eea; font-weight: 600; }
+
+    .rating-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
+    .rating-option { border: 2px solid transparent; border-radius: 6px; padding: 16px 10px; cursor: pointer; text-align: center; transition: transform 0.15s, box-shadow 0.15s; }
+    .rating-option.strong-no { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+    .rating-option.no { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+    .rating-option.mixed { background: #fff9c4; color: #f57f17; border: 1px solid #fff59d; }
+    .rating-option.yes { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .rating-option.strong-yes { background: #e0f2f1; color: #00695c; border: 1px solid #80cbc4; }
+    .rating-option:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .rating-option.selected { border-color: #333 !important; box-shadow: 0 0 0 2px rgba(0,0,0,0.1); }
+    .rating-label { font-weight: 600; font-size: 12px; margin-bottom: 8px; }
+    .rating-desc { font-size: 10px; line-height: 1.4; opacity: 0.95; }
+
+    .memo-section { margin-top: 16px; }
+    .memo-label { font-size: 13px; font-weight: 500; margin-bottom: 8px; display: block; color: #333; }
+    .memo-textarea { width: 100%; min-height: 80px; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; font-family: inherit; background: #f8f8f8; resize: vertical; }
+    .memo-textarea:focus { outline: none; border-color: #666; background: white; }
+
+    .summary-section { margin-top: 40px; background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 28px; }
+    .summary-title { font-size: 16px; font-weight: 600; margin-bottom: 24px; color: #333; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+    .summary-card { text-align: center; }
+    .summary-label { font-size: 12px; color: #666; margin-bottom: 8px; }
+    .summary-value { font-size: 24px; font-weight: 600; color: #333; }
+    .summary-rating { font-size: 18px; font-weight: 600; color: #d32f2f; }
+    .summary-rating.positive { color: #00897b; }
+    .breakdown-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: #333; }
+    .breakdown-list { display: flex; flex-direction: column; gap: 12px; }
+    .breakdown-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+    .breakdown-item:last-child { border-bottom: none; }
+    .breakdown-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #333; }
+    .breakdown-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: white; border-radius: 4px; }
+    .breakdown-count { font-size: 16px; font-weight: 600; color: #333; }
+
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+    .modal.active { display: flex; }
+    .modal-content { background: white; border-radius: 8px; padding: 32px; width: 90%; max-width: 480px; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
+    .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+    .modal-desc { color: #666; font-size: 13px; margin-bottom: 24px; }
+    .modal-input { width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; margin-bottom: 20px; font-family: inherit; }
+    .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+    .modal-btn { padding: 10px 24px; border-radius: 4px; border: none; cursor: pointer; font-size: 13px; font-weight: 500; font-family: inherit; }
+    .modal-btn.cancel { background: #f5f5f5; color: #666; }
+    .modal-btn.confirm { background: #333; color: white; }
+
+    .question-modal .modal-content, .ai-modal .modal-content { max-width: 900px; max-height: 88vh; }
+    .question-list { display: flex; flex-direction: column; gap: 12px; }
+    .question-item { padding: 16px; border: 1px solid #e0e0e0; border-radius: 6px; cursor: pointer; background: white; margin-bottom: 8px; }
+    .question-item:hover { border-color: #17a2b8; background: #f0f9ff; }
+    .question-item-title { font-weight: 600; font-size: 13px; color: #17a2b8; margin-bottom: 8px; }
+    .question-item-text { font-size: 13px; color: #333; margin-bottom: 12px; }
+    .criteria-mini-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; }
+    .criteria-mini-item { padding: 6px 4px; border-radius: 4px; font-size: 9px; text-align: center; }
+    .criteria-mini-item.strong-no { background: #ffcdd2; color: #c62828; }
+    .criteria-mini-item.no { background: #ffe0b2; color: #e65100; }
+    .criteria-mini-item.mixed { background: #fff9c4; color: #f57f17; }
+    .criteria-mini-item.yes { background: #c8e6c9; color: #2e7d32; }
+    .criteria-mini-item.strong-yes { background: #b2dfdb; color: #00695c; }
+    .criteria-mini-label { font-weight: 600; margin-bottom: 3px; }
+    .criteria-mini-desc { line-height: 1.3; }
+
+    .filter-btn { padding: 8px 16px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 12px; color: #666; font-family: inherit; }
+    .filter-btn:hover { background: #f8f8f8; border-color: #17a2b8; }
+    .filter-btn.active { background: #17a2b8; color: white; border-color: #17a2b8; }
+    .question-dept-tag { display: inline-block; padding: 4px 8px; background: #f0f0f0; border-radius: 3px; font-size: 10px; color: #666; margin-bottom: 6px; }
+
+    .ai-tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 2px solid #e0e0e0; }
+    .ai-tab { padding: 12px 20px; background: transparent; border: none; cursor: pointer; font-size: 14px; font-family: inherit; color: #666; font-weight: 500; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+    .ai-tab.active { color: #764ba2; border-bottom-color: #764ba2; }
+    .ai-panel { display: none; }
+    .ai-panel.active { display: block; }
+    .ai-section { margin-bottom: 24px; }
+    .ai-section-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #333; }
+    .ai-section-subtitle { font-size: 12px; color: #888; margin-bottom: 12px; line-height: 1.5; }
+
+    .file-drop-zone { border: 2px dashed #ddd; border-radius: 8px; padding: 24px; text-align: center; background: #fafafa; cursor: pointer; transition: all 0.2s; }
+    .file-drop-zone:hover { border-color: #764ba2; background: #f8f7ff; }
+    .file-drop-zone.has-file { border-style: solid; border-color: #764ba2; background: #f8f7ff; text-align: left; padding: 16px; }
+    .file-drop-icon { font-size: 32px; margin-bottom: 8px; }
+    .file-drop-text { font-size: 13px; color: #666; }
+    .file-drop-hint { font-size: 11px; color: #999; margin-top: 4px; }
+    .file-info { display: flex; align-items: center; gap: 12px; }
+    .file-info-icon { font-size: 24px; }
+    .file-info-name { font-size: 13px; font-weight: 500; color: #333; flex: 1; word-break: break-all; }
+    .file-info-size { font-size: 11px; color: #999; }
+    .file-remove-btn { background: none; border: none; cursor: pointer; color: #d32f2f; font-size: 18px; padding: 4px; }
+
+    .ai-textarea { width: 100%; min-height: 100px; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; font-family: inherit; resize: vertical; line-height: 1.5; }
+    .ai-textarea:focus { outline: none; border-color: #764ba2; }
+    .ai-toggle { font-size: 12px; color: #764ba2; cursor: pointer; text-decoration: underline; margin-top: 6px; display: inline-block; }
+    .ai-action-btn { padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; }
+    .ai-action-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3); }
+    .ai-action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .ai-loading { display: inline-block; width: 14px; height: 14px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .ai-result { margin-top: 24px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #764ba2; }
+    .ai-result-title { font-size: 14px; font-weight: 600; color: #764ba2; margin-bottom: 12px; }
+    .ai-summary-box { background: white; padding: 14px; border-radius: 6px; margin-bottom: 12px; border: 1px solid #e0e0e0; }
+    .ai-summary-label { font-size: 11px; font-weight: 600; color: #764ba2; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .ai-summary-text { font-size: 13px; color: #333; line-height: 1.6; }
+
+    .ai-question-card { background: white; border: 1px solid #e0e0e0; border-radius: 6px; padding: 16px; margin-bottom: 12px; }
+    .ai-question-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 10px; flex-wrap: wrap; }
+    .ai-question-category { display: inline-block; padding: 3px 10px; background: #764ba2; color: white; font-size: 11px; font-weight: 600; border-radius: 4px; }
+    .ai-question-apply-btn { padding: 4px 12px; background: white; border: 1px solid #764ba2; color: #764ba2; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; white-space: nowrap; }
+    .ai-question-apply-btn:hover { background: #764ba2; color: white; }
+    .ai-question-text { font-size: 13px; color: #333; line-height: 1.6; margin-bottom: 8px; font-weight: 500; }
+    .ai-question-rationale { font-size: 11px; color: #888; line-height: 1.5; margin-bottom: 8px; padding: 8px; background: #fafafa; border-radius: 4px; }
+    .ai-question-followups { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e0e0e0; }
+    .ai-question-followups-title { font-size: 10px; color: #764ba2; font-weight: 600; margin-bottom: 4px; }
+    .ai-question-followups ul { list-style: none; padding: 0; margin: 0; }
+    .ai-question-followups li { font-size: 11px; color: #555; padding-left: 12px; position: relative; line-height: 1.5; margin-bottom: 2px; }
+    .ai-question-followups li:before { content: "→"; position: absolute; left: 0; color: #764ba2; }
+
+    .voice-controls { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+    .mic-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: #d32f2f; color: white; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .mic-btn:hover { transform: scale(1.05); }
+    .mic-btn.recording { animation: pulse 1.5s infinite; background: #b71c1c; }
+    .mic-btn:disabled { background: #999; cursor: not-allowed; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); } 50% { box-shadow: 0 0 0 12px rgba(211, 47, 47, 0); } }
+    .voice-status { font-size: 12px; color: #666; }
+    .voice-status.recording { color: #d32f2f; font-weight: 600; }
+    .transcript-area { width: 100%; min-height: 140px; padding: 14px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; font-family: inherit; line-height: 1.6; resize: vertical; }
+    .transcript-area:focus { outline: none; border-color: #764ba2; }
+    .transcript-area.recording { background: #fff8f8; border-color: #d32f2f; }
+
+    .star-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 12px 0; }
+    .star-item { padding: 10px; border-radius: 6px; background: white; border: 1px solid #e0e0e0; }
+    .star-item.covered { border-left: 3px solid #2e7d32; }
+    .star-item.missing { border-left: 3px solid #d32f2f; }
+    .star-letter { font-weight: 700; font-size: 11px; color: #764ba2; margin-bottom: 4px; }
+    .star-status { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 3px; display: inline-block; margin-bottom: 4px; }
+    .star-status.covered { background: #e8f5e9; color: #2e7d32; }
+    .star-status.missing { background: #ffebee; color: #d32f2f; }
+    .star-note { font-size: 11px; color: #666; line-height: 1.4; }
+
+    .ai-rating-suggestion { display: inline-block; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; }
+    .ai-rating-suggestion.strong-yes { background: #e0f2f1; color: #00695c; }
+    .ai-rating-suggestion.yes { background: #e8f5e9; color: #2e7d32; }
+    .ai-rating-suggestion.mixed { background: #fff9c4; color: #f57f17; }
+    .ai-rating-suggestion.no { background: #fff3e0; color: #e65100; }
+    .ai-rating-suggestion.strong-no { background: #ffebee; color: #c62828; }
+
+    .strength-list, .concern-list { list-style: none; padding: 0; margin: 8px 0; }
+    .strength-list li, .concern-list li { padding: 6px 10px; margin-bottom: 4px; border-radius: 4px; font-size: 12px; line-height: 1.5; }
+    .strength-list li { background: #e8f5e9; color: #2e7d32; }
+    .strength-list li:before { content: "✓ "; font-weight: 700; }
+    .concern-list li { background: #fff3e0; color: #e65100; }
+    .concern-list li:before { content: "⚠ "; font-weight: 700; }
+
+    .followup-suggestion-card { background: white; border: 1px solid #e0e0e0; border-left: 3px solid #764ba2; padding: 10px 12px; margin-bottom: 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .followup-suggestion-text { flex: 1; font-size: 12px; color: #333; line-height: 1.5; }
+    .followup-apply-btn { padding: 4px 10px; background: #764ba2; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 11px; font-family: inherit; white-space: nowrap; }
+    .followup-apply-btn:hover { background: #5e3a87; }
+
+    .api-key-warning { background: #fff3e0; border: 1px solid #ffb74d; padding: 14px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; color: #e65100; line-height: 1.5; }
+    .api-key-warning a { color: #c54a00; }
+
+    .admin-page { display: none; max-width: 1400px; margin: 0 auto; padding: 40px; background: white; min-height: 100vh; }
+    .admin-page.active { display: block; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .admin-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    .admin-tab { padding: 10px 20px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 13px; font-family: inherit; color: #666; }
+    .admin-tab.active { background: #333; color: white; border-color: #333; }
+    .admin-panel { display: none; }
+    .admin-panel.active { display: block; }
+    .back-btn { padding: 10px 20px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px; font-family: inherit; }
+
+    .records-table { width: 100%; border-collapse: collapse; background: white; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; }
+    .records-table th, .records-table td { padding: 14px; text-align: left; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+    .records-table th { background: #f8f8f8; font-weight: 600; }
+    .records-table tr:hover td { background: #fafafa; }
+    .records-table td .delete-row-btn { padding: 4px 10px; background: white; border: 1px solid #d32f2f; border-radius: 3px; color: #d32f2f; cursor: pointer; font-size: 11px; font-family: inherit; }
+
+    .qb-editor { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 24px; margin-bottom: 20px; }
+    .qb-dept-select { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .qb-dept-select select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; font-family: inherit; }
+    .qb-table { width: 100%; border-collapse: collapse; }
+    .qb-table th, .qb-table td { padding: 10px; border: 1px solid #e0e0e0; font-size: 13px; vertical-align: top; }
+    .qb-table th { background: #f8f8f8; font-weight: 600; }
+    .qb-table td input, .qb-table td textarea { width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 3px; font-size: 12px; font-family: inherit; }
+    .qb-table td textarea { min-height: 60px; resize: vertical; }
+    .qb-add-btn { margin-top: 12px; padding: 8px 16px; background: white; border: 1px solid #17a2b8; border-radius: 4px; color: #17a2b8; cursor: pointer; font-size: 13px; font-family: inherit; }
+    .qb-save-btn { margin-top: 12px; margin-left: 8px; padding: 8px 16px; background: #17a2b8; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 13px; font-family: inherit; }
+    .qb-del-btn { padding: 4px 8px; background: white; border: 1px solid #d32f2f; border-radius: 3px; color: #d32f2f; cursor: pointer; font-size: 11px; font-family: inherit; }
+
+    .settings-form { max-width: 600px; }
+    .settings-field { margin-bottom: 16px; }
+    .settings-label { font-size: 13px; font-weight: 500; display: block; margin-bottom: 6px; }
+    .settings-hint { font-size: 11px; color: #999; margin-top: 4px; line-height: 1.5; }
+    .settings-input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; font-family: inherit; }
+    .settings-save-btn { padding: 10px 24px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-family: inherit; }
+
+    .export-modal .modal-content { max-width: 400px; }
+    .export-option { padding: 16px; border: 1px solid #e0e0e0; border-radius: 6px; cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+    .export-option:hover { background: #f8f8f8; border-color: #333; }
+    .export-option-icon { font-size: 24px; }
+    .export-option-text { font-size: 13px; font-weight: 500; }
+    .export-option-desc { font-size: 11px; color: #666; margin-top: 2px; }
+
+    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 6px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 2000; display: none; max-width: 80%; }
+    .toast.show { display: block; }
+    .toast.success { background: #00897b; }
+    .toast.error { background: #d32f2f; }
+
+    .hidden { display: none !important; }
+
+    @media print {
+      body { background: white; margin: 0; padding: 0; }
+      .header-buttons, .tabs-wrapper, .modal, .question-bank-btn, .ai-analyze-btn { display: none !important; }
+      .header { border-bottom: 2px solid #333; padding: 20px 0; }
+      .candidate-info, .content { page-break-inside: avoid; }
+      .attribute-card { page-break-inside: avoid; margin-bottom: 30px; }
+    }
+
+    @media (max-width: 768px) {
+      .header, .subtitle, .candidate-info, .tabs-wrapper, .content { padding-left: 20px; padding-right: 20px; }
+      .header-buttons { gap: 6px; }
+      .header-btn { font-size: 12px; padding: 6px 12px; }
+      .info-grid, .rating-grid, .star-grid { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .modal-content { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-page" id="mainPage">
+  <div class="header">
+    <h1>면접 평가표 · 엠아이텍</h1>
+    <div class="header-buttons">
+      <button class="header-btn ai" onclick="openAIModal('generate')">🤖 AI 어시스턴트</button>
+      <button class="header-btn" onclick="openExportModal()">📥 내보내기</button>
+      <button class="header-btn danger" onclick="resetForm()">🔄 초기화</button>
+      <button class="header-btn primary" onclick="saveEvaluation()">💾 저장</button>
+      <button class="header-btn" onclick="openAdminModal()">⚙️ 관리자</button>
+    </div>
+  </div>
+
+  <div class="subtitle">부서를 선택하고 후보자 정보를 입력한 뒤, 각 평가 항목에 등급을 선택하세요. 🤖 AI 어시스턴트로 맞춤 질문 생성과 답변 분석이 가능합니다.</div>
+
+  <div class="candidate-info">
+    <div class="section-title">후보자 정보</div>
+    <div class="info-grid">
+      <div class="info-field">
+        <label class="info-label">후보자 이름</label>
+        <input type="text" class="info-input" id="candidateName" placeholder="이름을 입력하세요">
+      </div>
+      <div class="info-field">
+        <label class="info-label">지원 직무</label>
+        <input type="text" class="info-input" id="position" placeholder="예: Senior Software Engineer">
+      </div>
+      <div class="info-field">
+        <label class="info-label">부서</label>
+        <select class="info-select" id="department" onchange="switchDepartment()">
+          <option value="영업마케팅본부">영업마케팅본부</option>
+          <option value="개발본부">개발본부</option>
+          <option value="연구본부">연구본부</option>
+          <option value="품질인허가본부">품질인허가본부</option>
+          <option value="생산본부">생산본부</option>
+          <option value="F&C팀">F&C팀</option>
+          <option value="HR팀">HR팀</option>
+        </select>
+      </div>
+      <div class="info-field">
+        <label class="info-label">면접 일자</label>
+        <input type="date" class="info-input" id="interviewDate">
+      </div>
+      <div class="info-field">
+        <label class="info-label">면접관 이름</label>
+        <input type="text" class="info-input" id="interviewer" placeholder="면접관 이름을 입력하세요">
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs-wrapper">
+    <div class="tabs" id="mainTabs">
+      <button class="tab active" data-dept="영업마케팅본부" onclick="switchTab('영업마케팅본부')">영업마케팅본부</button>
+      <button class="tab" data-dept="개발본부" onclick="switchTab('개발본부')">개발본부</button>
+      <button class="tab" data-dept="연구본부" onclick="switchTab('연구본부')">연구본부</button>
+      <button class="tab" data-dept="품질인허가본부" onclick="switchTab('품질인허가본부')">품질인허가본부</button>
+      <button class="tab" data-dept="생산본부" onclick="switchTab('생산본부')">생산본부</button>
+      <button class="tab" data-dept="F&C팀" onclick="switchTab('F&C팀')">F&C팀</button>
+      <button class="tab" data-dept="HR팀" onclick="switchTab('HR팀')">HR팀</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="attributesList"></div>
+    <div class="summary-section">
+      <div class="summary-title">평가 요약</div>
+      <div class="summary-grid">
+        <div class="summary-card"><div class="summary-label">평가 완료</div><div class="summary-value" id="completedCount">0 / 0</div></div>
+        <div class="summary-card"><div class="summary-label">평균 점수</div><div class="summary-value" id="averageScore">0 / 4</div></div>
+        <div class="summary-card"><div class="summary-label">평가 비율</div><div class="summary-value" id="percentage">0%</div></div>
+        <div class="summary-card"><div class="summary-label">종합 평가</div><div class="summary-rating" id="overallRating">—</div></div>
+      </div>
+      <div class="breakdown-title">평가 분포</div>
+      <div class="breakdown-list" id="breakdownList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="adminModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeAdminModal()">×</button>
+    <div class="modal-title">관리자 인증</div>
+    <div class="modal-desc">관리자 페이지에 접속하려면 비밀번호를 입력하세요.</div>
+    <input type="password" class="modal-input" id="adminPassword" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter') verifyAdmin()">
+    <div class="modal-buttons">
+      <button class="modal-btn cancel" onclick="closeAdminModal()">취소</button>
+      <button class="modal-btn confirm" onclick="verifyAdmin()">확인</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal question-modal" id="questionModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeQuestionModal()">×</button>
+    <div class="modal-title">질문은행</div>
+    <div class="modal-desc">질문을 클릭하면 해당 항목에 자동 적용됩니다.</div>
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="filter-btn active" data-filter="all" onclick="filterQuestions('all')">전체</button>
+        <button class="filter-btn" data-filter="common" onclick="filterQuestions('common')">🌟 공통</button>
+        <button class="filter-btn" data-filter="영업마케팅본부" onclick="filterQuestions('영업마케팅본부')">영업마케팅</button>
+        <button class="filter-btn" data-filter="개발본부" onclick="filterQuestions('개발본부')">개발본부</button>
+        <button class="filter-btn" data-filter="연구본부" onclick="filterQuestions('연구본부')">연구본부</button>
+        <button class="filter-btn" data-filter="품질인허가본부" onclick="filterQuestions('품질인허가본부')">품질인허가</button>
+        <button class="filter-btn" data-filter="생산본부" onclick="filterQuestions('생산본부')">생산본부</button>
+        <button class="filter-btn" data-filter="F&C팀" onclick="filterQuestions('F&C팀')">F&C팀</button>
+        <button class="filter-btn" data-filter="HR팀" onclick="filterQuestions('HR팀')">HR팀</button>
+      </div>
+    </div>
+    <div class="question-list" id="questionList"></div>
+  </div>
+</div>
+
+<div class="modal export-modal" id="exportModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="document.getElementById('exportModal').classList.remove('active')">×</button>
+    <div class="modal-title">결과 내보내기</div>
+    <div class="modal-desc">내보낼 형식을 선택하세요.</div>
+    <div class="export-option" onclick="exportToHTML()">
+      <div class="export-option-icon">🖨️</div>
+      <div><div class="export-option-text">인쇄 / PDF 저장</div><div class="export-option-desc">브라우저 인쇄 기능으로 PDF 저장</div></div>
+    </div>
+    <div class="export-option" onclick="exportToJSON()">
+      <div class="export-option-icon">📄</div>
+      <div><div class="export-option-text">JSON 파일로 다운로드</div><div class="export-option-desc">평가 데이터를 JSON 형식으로 저장</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal ai-modal" id="aiModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeAIModal()">×</button>
+    <div class="modal-title">🤖 AI 면접 어시스턴트</div>
+    <div class="modal-desc">Gemini AI를 활용해 맞춤 질문 생성과 답변 분석을 제공합니다.</div>
+
+    <div id="apiKeyWarning" class="api-key-warning hidden">
+      <strong>⚠️ Gemini API 키가 설정되지 않았습니다.</strong><br>
+      관리자 페이지 → 설정에서 API 키를 입력해주세요. <a href="https://aistudio.google.com/app/apikey" target="_blank">여기서 무료 발급</a>
+    </div>
+
+    <div class="ai-tabs">
+      <button class="ai-tab active" data-tab="generate" onclick="switchAITab('generate')">📝 질문 생성</button>
+      <button class="ai-tab" data-tab="analyze" onclick="switchAITab('analyze')">🎤 답변 분석</button>
+    </div>
+
+    <div class="ai-panel active" id="aiPanel-generate">
+      <div class="ai-section">
+        <div class="ai-section-title">📄 후보자 이력서</div>
+        <div class="ai-section-subtitle">PDF, 이미지(JPG/PNG), TXT 파일을 업로드하거나 텍스트를 직접 붙여넣으세요.</div>
+        <div class="file-drop-zone" id="resumeDropZone" onclick="document.getElementById('resumeFile').click()">
+          <div class="file-drop-icon">📄</div>
+          <div class="file-drop-text">파일 선택 또는 여기에 드래그</div>
+          <div class="file-drop-hint">PDF · JPG · PNG · TXT (최대 10MB)</div>
+        </div>
+        <input type="file" id="resumeFile" accept=".pdf,.jpg,.jpeg,.png,.txt" style="display:none" onchange="handleFileUpload(event, 'resume')">
+        <a class="ai-toggle" onclick="toggleTextInput('resumeText')">또는 텍스트 직접 입력 ▼</a>
+        <textarea class="ai-textarea hidden" id="resumeText" placeholder="이력서 내용을 여기에 붙여넣으세요"></textarea>
+      </div>
+
+      <div class="ai-section">
+        <div class="ai-section-title">📋 채용 공고 (Job Description)</div>
+        <div class="ai-section-subtitle">PDF, 이미지(JPG/PNG), TXT 파일을 업로드하거나 텍스트를 직접 붙여넣으세요.</div>
+        <div class="file-drop-zone" id="jdDropZone" onclick="document.getElementById('jdFile').click()">
+          <div class="file-drop-icon">📋</div>
+          <div class="file-drop-text">파일 선택 또는 여기에 드래그</div>
+          <div class="file-drop-hint">PDF · JPG · PNG · TXT (최대 10MB)</div>
+        </div>
+        <input type="file" id="jdFile" accept=".pdf,.jpg,.jpeg,.png,.txt" style="display:none" onchange="handleFileUpload(event, 'jd')">
+        <a class="ai-toggle" onclick="toggleTextInput('jdText')">또는 텍스트 직접 입력 ▼</a>
+        <textarea class="ai-textarea hidden" id="jdText" placeholder="채용 공고 내용을 여기에 붙여넣으세요"></textarea>
+      </div>
+
+      <button class="ai-action-btn" id="generateBtn" onclick="generateAIQuestions()">
+        <span id="generateBtnText">✨ 맞춤 질문 생성</span>
+      </button>
+
+      <div id="aiQuestionResults"></div>
+    </div>
+
+    <div class="ai-panel" id="aiPanel-analyze">
+      <div class="ai-section">
+        <div class="ai-section-title">❓ 분석할 질문</div>
+        <div class="ai-section-subtitle">'🎤 답변 분석' 버튼을 누르면 해당 항목의 질문이 자동 입력됩니다. 필요시 수정 가능합니다.</div>
+        <textarea class="ai-textarea" id="analyzeQuestion" placeholder="면접 질문을 입력하세요"></textarea>
+        <div id="analyzeAttributeInfo" style="font-size:11px;color:#888;margin-top:6px;"></div>
+      </div>
+
+      <div class="ai-section">
+        <div class="ai-section-title">🎤 후보자 답변</div>
+        <div class="ai-section-subtitle">마이크 버튼을 눌러 음성 받아쓰기를 시작하거나, 직접 입력할 수도 있습니다. 한국어 인식 지원 (Chrome/Edge 브라우저 필요).</div>
+        <div class="voice-controls">
+          <button class="mic-btn" id="micBtn" onclick="toggleVoiceRecording()">🎤</button>
+          <div class="voice-status" id="voiceStatus">대기 중</div>
+          <button class="header-btn" onclick="clearTranscript()">🗑️ 지우기</button>
+        </div>
+        <textarea class="transcript-area" id="transcriptArea" placeholder="음성 인식 결과 또는 직접 입력한 답변이 여기 표시됩니다."></textarea>
+      </div>
+
+      <button class="ai-action-btn" id="analyzeBtn" onclick="analyzeAnswer()">
+        <span id="analyzeBtnText">🔍 답변 분석하기</span>
+      </button>
+
+      <div id="aiAnalysisResults"></div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-page" id="adminPage">
+  <div class="admin-header">
+    <h2 class="section-title">⚙️ 관리자 페이지</h2>
+    <button class="back-btn" onclick="backToMain()">← 평가표로 돌아가기</button>
+  </div>
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="switchAdminTab('records')">📋 평가 기록</button>
+    <button class="admin-tab" onclick="switchAdminTab('questions')">📚 질문은행 편집</button>
+    <button class="admin-tab" onclick="switchAdminTab('settings')">🔧 설정</button>
+  </div>
+
+  <div class="admin-panel active" id="panel-records">
+    <div style="display:flex; gap:10px; margin-bottom:16px; align-items:center; flex-wrap:wrap;">
+      <span id="recordsCount" style="font-size:13px;color:#666;"></span>
+      <button class="header-btn danger" onclick="clearAllRecords()" style="margin-left:auto;">🗑️ 전체 삭제</button>
+      <button class="header-btn" onclick="exportAllCSV()">📥 CSV 내보내기</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="records-table">
+        <thead><tr><th>일시</th><th>후보자</th><th>직무</th><th>부서</th><th>면접일</th><th>면접관</th><th>평균점수</th><th>종합평가</th><th>완료</th><th>삭제</th></tr></thead>
+        <tbody id="recordsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="admin-panel" id="panel-questions">
+    <div class="qb-editor">
+      <div class="qb-dept-select">
+        <label style="font-size:13px;font-weight:500;">부서 선택:</label>
+        <select id="qbDeptSelect" onchange="loadQBEditor()">
+          <option value="영업마케팅본부">영업마케팅본부</option>
+          <option value="개발본부">개발본부</option>
+          <option value="연구본부">연구본부</option>
+          <option value="품질인허가본부">품질인허가본부</option>
+          <option value="생산본부">생산본부</option>
+          <option value="F&C팀">F&C팀</option>
+          <option value="HR팀">HR팀</option>
+        </select>
+        <span style="font-size:12px;color:#999;">* 공통 인재상 4개는 모든 부서에 자동 포함</span>
+      </div>
+      <table class="qb-table" id="qbTable">
+        <thead><tr><th width="25%">Attribute (역량명)</th><th width="55%">Interview Question</th><th width="20%">작업</th></tr></thead>
+        <tbody id="qbTableBody"></tbody>
+      </table>
+      <button class="qb-add-btn" onclick="addQBRow()">+ 항목 추가</button>
+      <button class="qb-save-btn" onclick="saveQBData()">💾 저장</button>
+    </div>
+  </div>
+
+  <div class="admin-panel" id="panel-settings">
+    <div class="qb-editor">
+      <h3 class="section-title" style="margin-bottom:20px;">설정</h3>
+      <div class="settings-form">
+        <div class="settings-field">
+          <label class="settings-label">🤖 Gemini API 키</label>
+          <input type="password" class="settings-input" id="geminiApiKey" placeholder="AIza... 형식의 API 키">
+          <div class="settings-hint">
+            AI 어시스턴트(질문 생성, 답변 분석) 사용에 필요합니다.
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#764ba2;">Google AI Studio에서 무료 발급</a>받을 수 있습니다.<br>
+            ⚠️ API 키는 이 브라우저에만 저장되며, 외부로 전송되지 않습니다.
+          </div>
+        </div>
+        <button class="settings-save-btn" onclick="saveAPIKey()">API 키 저장</button>
+
+        <hr style="margin:32px 0;border:none;border-top:1px solid #e0e0e0;">
+
+        <div class="settings-field">
+          <label class="settings-label">관리자 비밀번호 변경</label>
+          <input type="password" class="settings-input" id="newPassword" placeholder="새 비밀번호">
+        </div>
+        <div class="settings-field">
+          <label class="settings-label">새 비밀번호 확인</label>
+          <input type="password" class="settings-input" id="confirmPassword" placeholder="새 비밀번호 재입력">
+        </div>
+        <button class="settings-save-btn" onclick="changePassword()">비밀번호 변경</button>
+
+        <hr style="margin:32px 0;border:none;border-top:1px solid #e0e0e0;">
+
+        <div class="settings-field">
+          <label class="settings-label">회사명 (헤더 표시용)</label>
+          <input type="text" class="settings-input" id="companyName" placeholder="예: 엠아이텍">
+        </div>
+        <button class="settings-save-btn" onclick="saveSettings()">설정 저장</button>
+
+        <hr style="margin:32px 0;border:none;border-top:1px solid #e0e0e0;">
+
+        <div class="settings-field">
+          <label class="settings-label" style="color:#d32f2f;">⚠️ 데이터 초기화</label>
+          <p style="font-size:12px;color:#999;margin-bottom:10px;">모든 평가 기록, 질문은행, 설정을 삭제합니다. 되돌릴 수 없습니다.</p>
+          <button class="header-btn danger" onclick="factoryReset()">전체 데이터 초기화</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DEPARTMENTS = ['영업마케팅본부', '개발본부', '연구본부', '품질인허가본부', '생산본부', 'F&C팀', 'HR팀'];
+
+const COMMON_ATTRIBUTES = [
+  { Attribute: '목표지향 (Goal-oriented)', Question: '가장 도전적인 목표를 설정하고 달성했던 경험을 말씀해주세요.',
+    FollowUpQuestions: ['그 목표를 설정하게 된 배경이나 상황은 어떠했나요? (Situation)','당신에게 주어진 과제나 책임은 무엇이었나요? (Task)','목표 달성을 위해 구체적으로 어떤 행동을 취하셨나요? (Action)','그 결과는 어떠했으며, 그 경험에서 무엇을 배우셨나요? (Result)'], isCommon: true },
+  { Attribute: '팀워크 (Teamwork)', Question: '팀 내에서 갈등이 발생했을 때 해결했던 경험을 구체적으로 말씀해주세요.',
+    FollowUpQuestions: ['어떤 상황에서 갈등이 발생했나요? (Situation)','팀 내에서 당신의 역할은 무엇이었나요? (Task)','갈등 해결을 위해 어떤 접근 방식을 취하셨나요? (Action)','그 결과 팀에 어떤 변화가 있었나요? (Result)'], isCommon: true },
+  { Attribute: '학습과 도전 (Learning & Challenge)', Question: '새로운 기술이나 분야를 빠르게 학습해야 했던 경험을 말씀해주세요.',
+    FollowUpQuestions: ['어떤 상황에서 새로운 학습이 필요했나요? (Situation)','학습해야 할 목표나 달성해야 할 과제는 무엇이었나요? (Task)','학습을 위해 구체적으로 어떤 방법을 사용하셨나요? (Action)','학습한 내용을 어떻게 적용했으며, 그 결과는 어떠했나요? (Result)'], isCommon: true },
+  { Attribute: '혁신추구 (Innovation)', Question: '기존 방식을 개선하거나 혁신적인 아이디어를 제안하고 실행했던 경험을 말씀해주세요.',
+    FollowUpQuestions: ['어떤 문제나 개선 필요성을 발견하셨나요? (Situation)','해결해야 할 구체적인 과제나 목표는 무엇이었나요? (Task)','어떤 아이디어를 제안했고, 어떻게 실행하셨나요? (Action)','그 결과 어떤 변화나 성과가 있었나요? (Result)'], isCommon: true }
+];
+
+const DEFAULT_DEPT_QUESTIONS = {
+  '영업마케팅본부': [
+    { Attribute: '고객지향 (Customer Focus)', Question: '고객의 니즈를 파악하고 기대 이상의 성과를 낸 경험을 말씀해주세요.' },
+    { Attribute: '협상력 (Negotiation)', Question: '어려운 협상에서 목표를 달성했던 경험을 구체적으로 말씀해주세요.' },
+    { Attribute: '시장분석 (Market Analysis)', Question: '시장 트렌드를 분석하여 영업 전략을 수립하고 실행한 경험을 말씀해주세요.' }
+  ],
+  '개발본부': [
+    { Attribute: 'Technical problem solving', Question: 'Describe a complex technical challenge you faced. How did you approach solving it?' },
+    { Attribute: 'Strategic thinking & reasoning', Question: "What's the most difficult decision you've made at work? How did you come up with your decision?" },
+    { Attribute: 'Collaboration & teamwork', Question: 'Tell me about a time when you had to work with a difficult team member. How did you handle it?' }
+  ],
+  '연구본부': [
+    { Attribute: '연구설계 (Research Design)', Question: '연구 과제를 기획하고 실행했던 경험을 말씀해주세요. 특히 어려움을 극복한 과정을 중심으로 설명해주세요.' },
+    { Attribute: '데이터분석 (Data Analysis)', Question: '복잡한 데이터를 분석하여 의미 있는 인사이트를 도출했던 경험을 말씀해주세요.' },
+    { Attribute: '논문/특허 역량', Question: '연구 결과를 논문 또는 특허로 발표한 경험이 있으시면 말씀해주세요.' }
+  ],
+  '품질인허가본부': [
+    { Attribute: '품질관리 (Quality Management)', Question: '품질 이슈를 발견하고 해결했던 경험을 구체적으로 말씀해주세요.' },
+    { Attribute: '규제이해 (Regulatory Knowledge)', Question: '의료기기 인허가 관련 규정을 적용하거나 학습했던 경험을 말씀해주세요.' },
+    { Attribute: '문서화 역량 (Documentation)', Question: '정확하고 체계적인 문서를 작성해야 했던 경험을 말씀해주세요.' }
+  ],
+  '생산본부': [
+    { Attribute: '공정관리 (Process Management)', Question: '생산 공정에서 효율을 개선하거나 문제를 해결했던 경험을 말씀해주세요.' },
+    { Attribute: '안전의식 (Safety Awareness)', Question: '작업 현장에서 안전 문제를 예방하거나 대응했던 경험을 말씀해주세요.' },
+    { Attribute: '납기관리 (Delivery Management)', Question: '타이트한 납기를 맞추기 위해 어떤 노력을 했는지 구체적인 사례를 말씀해주세요.' }
+  ],
+  'F&C팀': [
+    { Attribute: '재무분석 (Financial Analysis)', Question: '재무 데이터를 분석하여 경영 의사결정에 기여했던 경험을 말씀해주세요.' },
+    { Attribute: '원가관리 (Cost Management)', Question: '원가를 절감하거나 효율적으로 관리했던 경험을 말씀해주세요.' },
+    { Attribute: '컴플라이언스 (Compliance)', Question: '법규 및 내부 규정 준수와 관련된 이슈를 처리했던 경험을 말씀해주세요.' }
+  ],
+  'HR팀': [
+    { Attribute: '인재채용 (Recruitment)', Question: '적합한 인재를 발굴하고 채용했던 경험을 구체적으로 말씀해주세요.' },
+    { Attribute: '조직개발 (OD)', Question: '조직 문화나 구성원 역량 향상을 위해 기획하고 실행했던 프로그램이 있다면 말씀해주세요.' },
+    { Attribute: '노무관리 (Labor Relations)', Question: '근로기준법 또는 노무 관련 이슈를 다뤘던 경험을 말씀해주세요.' }
+  ]
+};
+
+const RATING_CONFIG = {
+  'Strong no':  { label: '✕ Strong no',  score: 0, class: 'strong-no',  icon: '✕' },
+  'No':         { label: '👎 No',         score: 1, class: 'no',         icon: '👎' },
+  'Mixed':      { label: '➖ Mixed',      score: 2, class: 'mixed',      icon: '➖' },
+  'Yes':        { label: '👍 Yes',        score: 3, class: 'yes',        icon: '👍' },
+  'Strong yes': { label: '✓ Strong yes', score: 4, class: 'strong-yes', icon: '✓'  }
+};
+
+const RATING_DESCRIPTIONS = {
+  '목표지향 (Goal-oriented)': { 'Strong no': '목표 설정 능력 부족, 계획 없이 업무 진행. 우선순위를 정하지 못하고 산만함.','No': '기본적인 목표는 세우나 달성 의지 약함. 어려움에 쉽게 포기.','Mixed': '일반적인 목표는 달성하나 도전적 목표 설정에 소극적.','Yes': '명확한 목표를 설정하고 체계적으로 달성. 장애물 극복 의지 보임.','Strong yes': '도전적 목표를 스스로 설정하고 탁월한 성과 달성. 팀원에게도 긍정적 영향.' },
+  '팀워크 (Teamwork)': { 'Strong no': '팀 협업 현저히 부족, 독단적 행동. 갈등 야기.','No': '기본 협업은 하나 소극적, 팀 기여도 낮음.','Mixed': '일반 상황에선 협업하나 스트레스 상황에서 팀워크 저하.','Yes': '팀원과 효과적으로 협업, 다양한 의견 존중. 건설적 해결책 모색.','Strong yes': '뛰어난 협업 능력으로 팀 시너지 극대화. 갈등도 긍정적으로 해결.' },
+  '학습과 도전 (Learning & Challenge)': { 'Strong no': '학습 의지 없고 새로운 도전 회피. 변화에 저항.','No': '필요한 경우에만 학습, 적극성 부족.','Mixed': '상황에 따라 학습하나 자발적이지 않음.','Yes': '지속적 학습과 강한 성장 의지. 새 도전 두려워 않고 실패에서 배움.','Strong yes': '탁월한 학습 능력으로 빠르게 전문성 확보. 도전 과제를 스스로 찾아 성장 주도.' },
+  '혁신추구 (Innovation)': { 'Strong no': '혁신적 사고 부족, 기존 방식만 고수. 변화 거부.','No': '개선 아이디어 드물고 창의성 제한적.','Mixed': '때때로 개선 아이디어를 내나 실행력 부족.','Yes': '창의적 아이디어로 업무 개선. 혁신적 문제 해결.','Strong yes': '탁월한 혁신 능력으로 조직에 큰 가치 창출. 혁신 문화 선도.' },
+  '_default': { 'Strong no': '역량이 현저히 부족하여 업무 수행에 심각한 어려움 예상.','No': '기본 수준에 미치지 못하며 개선이 많이 필요함.','Mixed': '일부 역량은 보이나 일관성이 부족하고 상황에 따라 편차가 큼.','Yes': '역량을 명확히 보여주며 업무에 효과적으로 적용 가능.','Strong yes': '뛰어난 역량으로 조직에 큰 기여가 기대됨. 타인에게도 긍정적 영향.' }
+};
+
+let currentDepartment = '영업마케팅본부';
+let evaluationData = {};
+let allQuestionsData = {};
+let currentQuestionFilter = 'all';
+let currentAttributeIndex = null;
+let currentAnalyzeIndex = null;
+let resumeFileData = null;
+let jdFileData = null;
+let voiceRecognition = null;
+let isRecording = false;
+
+function lsGet(key, fallback = null) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch { return fallback; }
+}
+function lsSet(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+  catch { return false; }
+}
+
+function getQuestionBank(dept) {
+  const custom = lsGet('qb_' + dept, null);
+  const deptQuestions = (custom || DEFAULT_DEPT_QUESTIONS[dept] || []).map(q => ({ ...q, isCommon: false }));
+  return [...COMMON_ATTRIBUTES, ...deptQuestions];
+}
+
+function loadAllDepartments() {
+  DEPARTMENTS.forEach(dept => { allQuestionsData[dept] = getQuestionBank(dept); });
+  if (allQuestionsData[currentDepartment]) renderAttributes(allQuestionsData[currentDepartment]);
+  updateSummary();
+}
+
+function switchTab(dept) {
+  currentDepartment = dept;
+  document.getElementById('department').value = dept;
+  document.querySelectorAll('#mainTabs .tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-dept') === dept));
+  allQuestionsData[dept] = getQuestionBank(dept);
+  renderAttributes(allQuestionsData[dept]);
+  restoreEvaluations();
+  updateSummary();
+}
+function switchDepartment() { switchTab(document.getElementById('department').value); }
+
+function renderAttributes(data) {
+  const container = document.getElementById('attributesList');
+  container.innerHTML = '';
+  if (!data || data.length === 0) {
+    container.innerHTML = '<p style="text-align:center;color:#999;padding:40px;">질문은행이 비어있습니다.</p>';
+    return;
+  }
+  const commonAttrs = data.filter(item => item.isCommon);
+  const deptAttrs = data.filter(item => !item.isCommon);
+
+  if (commonAttrs.length > 0) {
+    const sec = document.createElement('div');
+    sec.className = 'common-section';
+    sec.innerHTML = `<div class="common-section-header"><div><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:24px;">🌟</span><div class="common-section-title">회사 공통 인재상</div></div><div class="common-section-subtitle">모든 부서 공통 핵심 역량</div></div></div>`;
+    commonAttrs.forEach((item, idx) => sec.appendChild(createAttributeCard(item, idx, true)));
+    container.appendChild(sec);
+  }
+
+  if (deptAttrs.length > 0) {
+    const sec = document.createElement('div');
+    sec.innerHTML = `<div class="department-section-header"><div class="department-section-title">${currentDepartment} 부서별 평가 항목</div><div class="department-section-subtitle">해당 직무에 특화된 평가 항목</div></div>`;
+    deptAttrs.forEach((item, idx) => sec.appendChild(createAttributeCard(item, commonAttrs.length + idx, false)));
+    container.appendChild(sec);
+  }
+}
+
+function getRatingDesc(attribute) { return RATING_DESCRIPTIONS[attribute] || RATING_DESCRIPTIONS['_default']; }
+
+function createAttributeCard(item, index, isCommon) {
+  const ratingDesc = getRatingDesc(item.Attribute);
+  let ratingsHTML = '';
+  for (const [rating, config] of Object.entries(RATING_CONFIG)) {
+    ratingsHTML += `<div class="rating-option ${config.class}" onclick="selectRating(${index}, '${rating}', ${config.score}, event)"><div class="rating-label">${config.label}</div><div class="rating-desc">${ratingDesc[rating]}</div></div>`;
+  }
+  let followUpHTML = '';
+  if (item.FollowUpQuestions?.length > 0) {
+    followUpHTML = `<div class="follow-up-section"><div class="follow-up-title">💡 후속 질문 <span style="font-size:10px;font-weight:500;color:#999;">(S-T-A-R)</span></div><ul class="follow-up-list">${item.FollowUpQuestions.map(q => `<li class="follow-up-item">${escHtml(q)}</li>`).join('')}</ul></div>`;
+  }
+  const card = document.createElement('div');
+  card.className = 'attribute-card' + (isCommon ? ' common' : '');
+  card.innerHTML = `<div class="attribute-header"><div class="attribute-name${isCommon ? ' common' : ''}">Attribute: ${escHtml(item.Attribute)}${isCommon ? '<span class="common-badge">공통</span>' : ''}</div><div class="attribute-actions"><button class="ai-analyze-btn" onclick="openAnalyzeForAttribute(${index})">🎤 답변 분석</button><button class="question-bank-btn" onclick="openQuestionBank(${index})">📚 질문은행</button></div></div><div class="question-text"><strong>Interview question:</strong> <span id="question-${index}">${escHtml(item.Question)}</span></div>${followUpHTML}<div class="rating-grid" id="rating-${index}">${ratingsHTML}</div><div class="memo-section"><label class="memo-label">면접관 메모</label><textarea class="memo-textarea" id="memo-${index}" placeholder="후보자 답변, 평가 근거 등을 기입하세요."></textarea></div>`;
+  return card;
+}
+
+function selectRating(index, rating, score, event) {
+  const container = document.getElementById(`rating-${index}`);
+  container.querySelectorAll('.rating-option').forEach(opt => opt.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  const dept = currentDepartment;
+  const questions = allQuestionsData[dept] || [];
+  if (!evaluationData[dept]) evaluationData[dept] = [];
+  evaluationData[dept][index] = {
+    attribute: questions[index]?.Attribute || '',
+    question: document.getElementById(`question-${index}`)?.textContent || '',
+    rating, score,
+    memo: document.getElementById(`memo-${index}`)?.value || ''
+  };
+  updateSummary();
+}
+
+function restoreEvaluations() {
+  const evals = evaluationData[currentDepartment] || [];
+  evals.forEach((evaluation, index) => {
+    if (!evaluation) return;
+    const container = document.getElementById(`rating-${index}`);
+    if (container) {
+      container.querySelectorAll('.rating-option').forEach(opt => opt.classList.remove('selected'));
+      const ratingLabels = Object.keys(RATING_CONFIG);
+      const idx = ratingLabels.indexOf(evaluation.rating);
+      if (idx >= 0) {
+        const opts = container.querySelectorAll('.rating-option');
+        if (opts[idx]) opts[idx].classList.add('selected');
+      }
+    }
+    const memoField = document.getElementById(`memo-${index}`);
+    if (memoField && evaluation.memo) memoField.value = evaluation.memo;
+  });
+}
+
+function updateSummary() {
+  const dept = currentDepartment;
+  const evals = evaluationData[dept] || [];
+  const questions = allQuestionsData[dept] || [];
+  const completed = evals.filter(e => e && e.score !== undefined);
+  const totalScore = completed.reduce((s, e) => s + e.score, 0);
+  const maxScore = completed.length * 4;
+  const pct = completed.length > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
+
+  document.getElementById('completedCount').textContent = `${completed.length} / ${questions.length}`;
+  document.getElementById('averageScore').textContent = completed.length > 0 ? `${(totalScore / completed.length).toFixed(1)} / 4` : '0 / 4';
+  document.getElementById('percentage').textContent = `${pct}%`;
+
+  const avg = completed.length > 0 ? totalScore / completed.length : -1;
+  let finalRating = '—', ratingClass = '';
+  if (avg >= 3.5)      { finalRating = 'Strong yes'; ratingClass = 'positive'; }
+  else if (avg >= 2.5) { finalRating = 'Yes';        ratingClass = 'positive'; }
+  else if (avg >= 1.5) { finalRating = 'Mixed'; }
+  else if (avg >= 0.5) { finalRating = 'No'; }
+  else if (avg >= 0)   { finalRating = 'Strong no'; }
+  const ratingEl = document.getElementById('overallRating');
+  ratingEl.textContent = finalRating;
+  ratingEl.className = 'summary-rating' + (ratingClass ? ' ' + ratingClass : '');
+
+  updateBreakdown(completed);
+}
+
+function updateBreakdown(evaluations) {
+  const breakdown = { 'Strong yes': 0, 'Yes': 0, 'Mixed': 0, 'No': 0, 'Strong no': 0 };
+  evaluations.forEach(e => { if (e?.rating) breakdown[e.rating]++; });
+  const container = document.getElementById('breakdownList');
+  container.innerHTML = '';
+  for (const [rating, count] of Object.entries(breakdown)) {
+    const config = RATING_CONFIG[rating];
+    const item = document.createElement('div');
+    item.className = 'breakdown-item';
+    item.innerHTML = `<div class="breakdown-label"><div class="breakdown-icon ${config.class}" style="background:${getRatingBg(config.class)}">${config.icon}</div><span>${rating}</span></div><div class="breakdown-count">${count}</div>`;
+    container.appendChild(item);
+  }
+}
+function getRatingBg(cls) {
+  return ({ 'strong-no': '#c62828', 'no': '#e65100', 'mixed': '#f57f17', 'yes': '#2e7d32', 'strong-yes': '#00695c' })[cls] || '#999';
+}
+
+function openQuestionBank(index) {
+  currentAttributeIndex = index;
+  currentQuestionFilter = 'all';
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-filter') === 'all'));
+  renderQuestionList();
+  document.getElementById('questionModal').classList.add('active');
+}
+function closeQuestionModal() { document.getElementById('questionModal').classList.remove('active'); }
+function filterQuestions(filter) {
+  currentQuestionFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-filter') === filter));
+  renderQuestionList();
+}
+function renderQuestionList() {
+  const list = document.getElementById('questionList');
+  list.innerHTML = '';
+  let questionsToShow = [];
+  if (currentQuestionFilter === 'all') {
+    DEPARTMENTS.forEach(dept => (allQuestionsData[dept] || []).forEach(q => questionsToShow.push({ ...q, dept })));
+  } else if (currentQuestionFilter === 'common') {
+    DEPARTMENTS.forEach(dept => (allQuestionsData[dept] || []).filter(q => q.isCommon).forEach(q => questionsToShow.push({ ...q, dept })));
+  } else {
+    (allQuestionsData[currentQuestionFilter] || []).forEach(q => questionsToShow.push({ ...q, dept: currentQuestionFilter }));
+  }
+  const seen = new Set();
+  const unique = questionsToShow.filter(q => {
+    const key = q.Attribute + '|' + q.Question;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  if (unique.length === 0) { list.innerHTML = '<p style="text-align:center;color:#999;padding:40px;">질문이 없습니다.</p>'; return; }
+  unique.forEach(q => {
+    const ratingDesc = getRatingDesc(q.Attribute);
+    let criteriaHTML = '';
+    for (const [rating, config] of Object.entries(RATING_CONFIG)) {
+      criteriaHTML += `<div class="criteria-mini-item ${config.class}"><div class="criteria-mini-label">${rating}</div><div class="criteria-mini-desc">${escHtml(ratingDesc[rating])}</div></div>`;
+    }
+    let followUpHTML = '';
+    if (q.FollowUpQuestions?.length > 0) {
+      followUpHTML = `<div style="margin-top:10px;padding:8px 12px;background:#f8f9fa;border-radius:4px;border-left:3px solid #667eea;"><div style="font-size:11px;font-weight:600;color:#667eea;margin-bottom:4px;">💡 후속 질문</div><ul style="margin:0;padding:0;list-style:none;">${q.FollowUpQuestions.map(fq => `<li style="font-size:11px;color:#555;padding-left:12px;position:relative;margin-bottom:3px;"><span style="position:absolute;left:0;color:#667eea;">→</span>${escHtml(fq)}</li>`).join('')}</ul></div>`;
+    }
+    const item = document.createElement('div');
+    item.className = 'question-item';
+    item.onclick = () => selectQuestion(currentAttributeIndex, q);
+    item.innerHTML = `<div class="question-dept-tag">${q.isCommon ? '🌟 공통' : escHtml(q.dept)}</div><div class="question-item-title">${escHtml(q.Attribute)}</div><div class="question-item-text"><strong>Question:</strong> ${escHtml(q.Question)}</div>${followUpHTML}<div style="margin-top:10px;"><div style="font-size:11px;font-weight:600;color:#666;margin-bottom:4px;">평가 기준</div><div class="criteria-mini-grid">${criteriaHTML}</div></div>`;
+    list.appendChild(item);
+  });
+}
+
+function selectQuestion(index, question) {
+  applyQuestionToAttribute(index, question);
+  closeQuestionModal();
+  showToast('질문과 평가 기준이 적용되었습니다', 'success');
+}
+
+function applyQuestionToAttribute(index, question) {
+  const qEl = document.getElementById(`question-${index}`);
+  if (qEl) qEl.textContent = question.Question;
+
+  const card = qEl?.closest('.attribute-card');
+  if (card) {
+    const existing = card.querySelector('.follow-up-section');
+    if (existing) existing.remove();
+    if (question.FollowUpQuestions?.length > 0) {
+      const html = `<div class="follow-up-section"><div class="follow-up-title">💡 후속 질문 <span style="font-size:10px;font-weight:500;color:#999;">(S-T-A-R)</span></div><ul class="follow-up-list">${question.FollowUpQuestions.map(q => `<li class="follow-up-item">${escHtml(q)}</li>`).join('')}</ul></div>`;
+      card.querySelector('.question-text')?.insertAdjacentHTML('afterend', html);
+    }
+  }
+
+  const ratingContainer = document.getElementById(`rating-${index}`);
+  if (ratingContainer && question.Attribute) {
+    const ratingDesc = getRatingDesc(question.Attribute);
+    let ratingsHTML = '';
+    for (const [rating, config] of Object.entries(RATING_CONFIG)) {
+      ratingsHTML += `<div class="rating-option ${config.class}" onclick="selectRating(${index}, '${rating}', ${config.score}, event)"><div class="rating-label">${config.label}</div><div class="rating-desc">${escHtml(ratingDesc[rating])}</div></div>`;
+    }
+    ratingContainer.innerHTML = ratingsHTML;
+  }
+
+  if (question.Attribute) {
+    const attrEl = ratingContainer?.closest('.attribute-card')?.querySelector('.attribute-name');
+    if (attrEl) {
+      attrEl.className = 'attribute-name' + (question.isCommon ? ' common' : '');
+      attrEl.innerHTML = `Attribute: ${escHtml(question.Attribute)}${question.isCommon ? '<span class="common-badge">공통</span>' : ''}`;
+    }
+  }
+
+  if (evaluationData[currentDepartment]?.[index]) {
+    if (question.Attribute) evaluationData[currentDepartment][index].attribute = question.Attribute;
+    evaluationData[currentDepartment][index].question = question.Question;
+  }
+}
+
+function saveEvaluation() {
+  const candidateName = document.getElementById('candidateName').value.trim();
+  const position = document.getElementById('position').value.trim();
+  const department = document.getElementById('department').value;
+  const interviewDate = document.getElementById('interviewDate').value;
+  const interviewer = document.getElementById('interviewer').value.trim();
+  if (!candidateName) { showToast('후보자 이름을 입력하세요', 'error'); return; }
+  if (!interviewer)   { showToast('면접관 이름을 입력하세요', 'error'); return; }
+  const evals = evaluationData[department] || [];
+  const completed = evals.filter(e => e?.score !== undefined);
+  if (completed.length === 0) { showToast('최소 1개 이상의 평가를 완료하세요', 'error'); return; }
+  completed.forEach((e, i) => { e.memo = document.getElementById(`memo-${i}`)?.value || ''; });
+  const totalScore = completed.reduce((s, e) => s + e.score, 0);
+  const avg = totalScore / completed.length;
+  const percentage = Math.round((totalScore / (completed.length * 4)) * 100);
+  let finalRating = 'Strong no';
+  if (avg >= 3.5) finalRating = 'Strong yes';
+  else if (avg >= 2.5) finalRating = 'Yes';
+  else if (avg >= 1.5) finalRating = 'Mixed';
+  else if (avg >= 0.5) finalRating = 'No';
+  const record = {
+    id: Date.now(), timestamp: new Date().toLocaleString('ko-KR'),
+    candidateName, position, department, interviewDate, interviewer,
+    evaluations: completed, completedCount: completed.length, totalScore,
+    avgScore: parseFloat((totalScore / completed.length).toFixed(1)),
+    percentage, finalRating
+  };
+  const records = lsGet('evaluations', []);
+  records.push(record);
+  lsSet('evaluations', records);
+  showToast('✅ 평가가 저장되었습니다', 'success');
+}
+
+function resetForm() {
+  if (!confirm('현재 입력된 내용이 모두 지워집니다. 계속하시겠습니까?')) return;
+  document.getElementById('candidateName').value = '';
+  document.getElementById('position').value = '';
+  document.getElementById('interviewer').value = '';
+  document.getElementById('interviewDate').valueAsDate = new Date();
+  evaluationData = {};
+  renderAttributes(allQuestionsData[currentDepartment]);
+  updateSummary();
+  showToast('초기화되었습니다', 'success');
+}
+
+function openExportModal() {
+  const evals = evaluationData[currentDepartment] || [];
+  if (!evals.filter(e => e?.score !== undefined).length) { showToast('최소 1개 이상의 평가를 완료하세요', 'error'); return; }
+  document.getElementById('exportModal').classList.add('active');
+}
+
+function exportToHTML() {
+  document.getElementById('exportModal').classList.remove('active');
+  const candidateName = document.getElementById('candidateName').value.trim() || '(이름 없음)';
+  const position = document.getElementById('position').value.trim();
+  const department = document.getElementById('department').value;
+  const interviewDate = document.getElementById('interviewDate').value;
+  const interviewer = document.getElementById('interviewer').value.trim();
+  const evals = evaluationData[department] || [];
+  const questions = allQuestionsData[department] || [];
+  const completed = evals.filter(e => e?.score !== undefined);
+  const totalScore = completed.reduce((s, e) => s + e.score, 0);
+  const avg = completed.length ? (totalScore / completed.length).toFixed(1) : 0;
+  const pct = completed.length ? Math.round((totalScore / (completed.length * 4)) * 100) : 0;
+  let finalRating = '—', ratingClass = '';
+  const avgN = parseFloat(avg);
+  if (avgN >= 3.5)      { finalRating = 'Strong yes'; ratingClass = 'positive'; }
+  else if (avgN >= 2.5) { finalRating = 'Yes';        ratingClass = 'positive'; }
+  else if (avgN >= 1.5)  finalRating = 'Mixed';
+  else if (avgN >= 0.5)  finalRating = 'No';
+  else                   finalRating = 'Strong no';
+  const commonEvals = [], deptEvals = [];
+  questions.forEach((q, i) => {
+    const ev = evals[i];
+    if (ev?.score !== undefined) {
+      if (q.isCommon) commonEvals.push({ q, ev, i }); else deptEvals.push({ q, ev, i });
+    }
+  });
+  const breakdown = { 'Strong yes': 0, 'Yes': 0, 'Mixed': 0, 'No': 0, 'Strong no': 0 };
+  completed.forEach(e => { if (e?.rating) breakdown[e.rating]++; });
+
+  const printWin = window.open('', '_blank');
+  printWin.document.write(`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>면접 평가표 - ${escHtml(candidateName)}</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;padding:40px;background:white;color:#333;}.hdr{border-bottom:3px solid #17a2b8;padding-bottom:20px;margin-bottom:30px;}h1{font-size:26px;font-weight:700;margin-bottom:8px;}.badge{display:inline-block;background:#17a2b8;color:white;padding:5px 12px;border-radius:4px;font-size:13px;font-weight:600;}.info{background:#f8f9fa;padding:20px;border-radius:8px;margin-bottom:30px;border:1px solid #e0e0e0;}.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}.info-row{display:flex;gap:8px;font-size:13px;}.info-label{font-weight:600;color:#666;min-width:90px;}.sec-hdr{background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:14px 18px;border-radius:8px;margin:24px 0 16px;font-size:16px;font-weight:600;}.card{border:1px solid #e0e0e0;border-radius:8px;padding:18px;margin-bottom:16px;page-break-inside:avoid;}.card.common{border-left:4px solid #667eea;background:linear-gradient(to right,#f8f7ff,white);}.card-title{font-weight:600;font-size:14px;color:#667eea;margin-bottom:10px;}.card-title.dept{color:#17a2b8;}.card-q{font-size:13px;color:#333;margin-bottom:12px;line-height:1.5;}.rating-chip{display:inline-block;padding:8px 16px;border-radius:4px;font-weight:600;font-size:13px;color:white;}.strong-yes{background:#00695c;}.yes{background:#2e7d32;}.mixed{background:#f57f17;}.no{background:#e65100;}.strong-no{background:#c62828;}.memo{background:#f8f9fa;padding:10px;border-radius:4px;font-size:12px;color:#555;margin-top:10px;line-height:1.5;}.summary{background:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;padding:22px;margin-top:28px;}.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}.sum-card{background:white;border:1px solid #e0e0e0;border-radius:6px;padding:14px;text-align:center;}.sum-label{font-size:11px;color:#666;margin-bottom:6px;}.sum-value{font-size:22px;font-weight:700;color:#333;}.sum-rating{font-size:18px;font-weight:700;color:#d32f2f;}.sum-rating.positive{color:#00897b;}.bk-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px;}.footer{margin-top:36px;padding-top:16px;border-top:2px solid #e0e0e0;text-align:center;color:#999;font-size:11px;}@media print{body{padding:20px;}.card{page-break-inside:avoid;}}</style></head><body><div class="hdr"><h1>면접 평가표</h1><span class="badge">${escHtml(department)}</span></div><div class="info"><div class="info-grid"><div class="info-row"><span class="info-label">후보자:</span><span>${escHtml(candidateName)}</span></div><div class="info-row"><span class="info-label">지원 직무:</span><span>${escHtml(position) || '-'}</span></div><div class="info-row"><span class="info-label">부서:</span><span>${escHtml(department)}</span></div><div class="info-row"><span class="info-label">면접 일자:</span><span>${escHtml(interviewDate) || '-'}</span></div><div class="info-row"><span class="info-label">면접관:</span><span>${escHtml(interviewer)}</span></div></div></div>`);
+  if (commonEvals.length) {
+    printWin.document.write('<div class="sec-hdr">🌟 회사 공통 인재상</div>');
+    commonEvals.forEach(({ ev, i }) => {
+      const memo = document.getElementById(`memo-${i}`)?.value || '';
+      printWin.document.write(`<div class="card common"><div class="card-title">#${i+1} Attribute: ${escHtml(ev.attribute)} <span style="background:#667eea;color:white;padding:2px 6px;border-radius:3px;font-size:10px;">공통</span></div><div class="card-q"><strong>Interview question:</strong> ${escHtml(ev.question)}</div><div class="rating-chip ${RATING_CONFIG[ev.rating]?.class}">${ev.rating} (${ev.score}점 / 4점)</div>${memo ? `<div class="memo"><strong>면접관 메모:</strong><br>${escHtml(memo)}</div>` : ''}</div>`);
+    });
+  }
+  if (deptEvals.length) {
+    printWin.document.write(`<div class="sec-hdr" style="background:linear-gradient(135deg,#17a2b8,#0d7a8a);">${escHtml(department)} 부서별 평가 항목</div>`);
+    deptEvals.forEach(({ ev, i }) => {
+      const memo = document.getElementById(`memo-${i}`)?.value || '';
+      printWin.document.write(`<div class="card"><div class="card-title dept">#${i+1} Attribute: ${escHtml(ev.attribute)}</div><div class="card-q"><strong>Interview question:</strong> ${escHtml(ev.question)}</div><div class="rating-chip ${RATING_CONFIG[ev.rating]?.class}">${ev.rating} (${ev.score}점 / 4점)</div>${memo ? `<div class="memo"><strong>면접관 메모:</strong><br>${escHtml(memo)}</div>` : ''}</div>`);
+    });
+  }
+  printWin.document.write(`<div class="summary"><div style="font-size:16px;font-weight:600;margin-bottom:18px;">평가 요약</div><div class="summary-grid"><div class="sum-card"><div class="sum-label">평가 완료</div><div class="sum-value">${completed.length} / ${questions.length}</div></div><div class="sum-card"><div class="sum-label">평균 점수</div><div class="sum-value">${avg} / 4</div></div><div class="sum-card"><div class="sum-label">평가 비율</div><div class="sum-value">${pct}%</div></div><div class="sum-card"><div class="sum-label">종합 평가</div><div class="sum-rating ${ratingClass}">${finalRating}</div></div></div><div style="font-size:14px;font-weight:600;margin-bottom:10px;">평가 분포</div>${Object.entries(breakdown).map(([r, c]) => `<div class="bk-item"><span>${r}</span><span style="font-weight:600;">${c}</span></div>`).join('')}</div><div class="footer">생성 일시: ${new Date().toLocaleString('ko-KR')} · 엠아이텍 면접 평가표</div></body></html>`);
+  printWin.document.close();
+  printWin.onload = () => setTimeout(() => printWin.print(), 250);
+}
+
+function exportToJSON() {
+  document.getElementById('exportModal').classList.remove('active');
+  const candidateName = document.getElementById('candidateName').value.trim() || '이름없음';
+  const department = document.getElementById('department').value;
+  const evals = evaluationData[department] || [];
+  const completed = evals.filter(e => e?.score !== undefined);
+  const data = {
+    candidateName, position: document.getElementById('position').value, department,
+    interviewDate: document.getElementById('interviewDate').value,
+    interviewer: document.getElementById('interviewer').value,
+    evaluations: completed, exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `면접평가_${candidateName}_${department}_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function openAdminModal() {
+  document.getElementById('adminModal').classList.add('active');
+  document.getElementById('adminPassword').value = '';
+  setTimeout(() => document.getElementById('adminPassword').focus(), 100);
+}
+function closeAdminModal() { document.getElementById('adminModal').classList.remove('active'); }
+function verifyAdmin() {
+  const pw = document.getElementById('adminPassword').value;
+  const saved = lsGet('adminPassword', '5245');
+  if (pw === saved) { closeAdminModal(); showAdminPage(); }
+  else showToast('비밀번호가 올바르지 않습니다', 'error');
+}
+function showAdminPage() {
+  document.getElementById('mainPage').classList.add('hidden');
+  document.getElementById('adminPage').classList.add('active');
+  loadRecords();
+  loadQBEditor();
+  loadSettingsPanel();
+  showToast('관리자 페이지 접속', 'success');
+}
+function backToMain() {
+  document.getElementById('adminPage').classList.remove('active');
+  document.getElementById('mainPage').classList.remove('hidden');
+}
+function switchAdminTab(tab) {
+  const tabs = ['records', 'questions', 'settings'];
+  document.querySelectorAll('.admin-tab').forEach((t, i) => t.classList.toggle('active', tabs[i] === tab));
+  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+function loadRecords() {
+  const records = lsGet('evaluations', []);
+  const tbody = document.getElementById('recordsBody');
+  document.getElementById('recordsCount').textContent = `총 ${records.length}건`;
+  tbody.innerHTML = '';
+  if (!records.length) { tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:#999;">기록이 없습니다</td></tr>'; return; }
+  records.slice().reverse().forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${escHtml(r.timestamp)}</td><td>${escHtml(r.candidateName)}</td><td>${escHtml(r.position) || '-'}</td><td>${escHtml(r.department)}</td><td>${escHtml(r.interviewDate) || '-'}</td><td>${escHtml(r.interviewer)}</td><td>${r.avgScore} / 4</td><td><strong>${r.finalRating}</strong></td><td>${r.completedCount}</td><td><button class="delete-row-btn" onclick="deleteRecord(${r.id})">삭제</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+function deleteRecord(id) {
+  if (!confirm('이 기록을 삭제하시겠습니까?')) return;
+  lsSet('evaluations', lsGet('evaluations', []).filter(r => r.id !== id));
+  loadRecords();
+  showToast('삭제되었습니다', 'success');
+}
+function clearAllRecords() {
+  if (!confirm('모든 평가 기록을 삭제하시겠습니까? 되돌릴 수 없습니다.')) return;
+  lsSet('evaluations', []);
+  loadRecords();
+  showToast('전체 기록이 삭제되었습니다', 'success');
+}
+function exportAllCSV() {
+  const records = lsGet('evaluations', []);
+  if (!records.length) { showToast('내보낼 기록이 없습니다', 'error'); return; }
+  const headers = ['일시', '후보자', '직무', '부서', '면접일', '면접관', '평균점수', '종합평가', '완료항목수'];
+  const rows = records.map(r => [r.timestamp, r.candidateName, r.position || '', r.department, r.interviewDate || '', r.interviewer, r.avgScore, r.finalRating, r.completedCount]);
+  const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `면접기록_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function loadQBEditor() {
+  const dept = document.getElementById('qbDeptSelect').value;
+  const custom = lsGet('qb_' + dept, null) || DEFAULT_DEPT_QUESTIONS[dept] || [];
+  const tbody = document.getElementById('qbTableBody');
+  tbody.innerHTML = '';
+  custom.forEach(q => addQBRowWithData(q));
+}
+function addQBRowWithData(q) {
+  const tbody = document.getElementById('qbTableBody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td><input type="text" value="${escHtml(q.Attribute)}" placeholder="역량명 (한/영)"></td><td><textarea placeholder="면접 질문">${escHtml(q.Question)}</textarea></td><td><button class="qb-del-btn" onclick="this.closest('tr').remove()">삭제</button></td>`;
+  tbody.appendChild(tr);
+}
+function addQBRow() { addQBRowWithData({ Attribute: '', Question: '' }); }
+function saveQBData() {
+  const dept = document.getElementById('qbDeptSelect').value;
+  const rows = document.querySelectorAll('#qbTableBody tr');
+  const data = [];
+  rows.forEach(tr => {
+    const inputs = tr.querySelectorAll('input, textarea');
+    const attr = inputs[0]?.value.trim();
+    const q = inputs[1]?.value.trim();
+    if (attr && q) data.push({ Attribute: attr, Question: q });
+  });
+  lsSet('qb_' + dept, data);
+  allQuestionsData[dept] = getQuestionBank(dept);
+  if (dept === currentDepartment) renderAttributes(allQuestionsData[dept]);
+  showToast('질문은행이 저장되었습니다', 'success');
+}
+
+function loadSettingsPanel() {
+  document.getElementById('companyName').value = (lsGet('settings', {}) || {}).companyName || '엠아이텍';
+  document.getElementById('geminiApiKey').value = lsGet('geminiApiKey', '');
+}
+function saveSettings() {
+  const companyName = document.getElementById('companyName').value.trim();
+  lsSet('settings', { companyName });
+  document.querySelector('.header h1').textContent = `면접 평가표 · ${companyName || '엠아이텍'}`;
+  showToast('설정이 저장되었습니다', 'success');
+}
+function changePassword() {
+  const np = document.getElementById('newPassword').value;
+  const cp = document.getElementById('confirmPassword').value;
+  if (!np) { showToast('새 비밀번호를 입력하세요', 'error'); return; }
+  if (np !== cp) { showToast('비밀번호가 일치하지 않습니다', 'error'); return; }
+  lsSet('adminPassword', np);
+  document.getElementById('newPassword').value = '';
+  document.getElementById('confirmPassword').value = '';
+  showToast('비밀번호가 변경되었습니다', 'success');
+}
+function saveAPIKey() {
+  const key = document.getElementById('geminiApiKey').value.trim();
+  if (!key) { showToast('API 키를 입력하세요', 'error'); return; }
+  lsSet('geminiApiKey', key);
+  showToast('✅ API 키가 저장되었습니다', 'success');
+}
+function factoryReset() {
+  if (!confirm('모든 데이터가 초기화됩니다. 정말 계속하시겠습니까?')) return;
+  if (!confirm('최종 확인: 되돌릴 수 없습니다. 초기화하시겠습니까?')) return;
+  localStorage.clear();
+  showToast('초기화 완료. 페이지를 새로고침합니다.', 'success');
+  setTimeout(() => location.reload(), 1500);
+}
+
+// ====================================================================
+// 🤖 AI 어시스턴트 - Gemini API
+// ====================================================================
+const GEMINI_MODEL = 'gemini-2.5-flash';
+
+function getGeminiKey() { return lsGet('geminiApiKey', ''); }
+
+function checkAPIKey() {
+  const key = getGeminiKey();
+  const warning = document.getElementById('apiKeyWarning');
+  if (!key) { warning.classList.remove('hidden'); return false; }
+  warning.classList.add('hidden');
+  return true;
+}
+
+async function callGemini(prompt, files = [], jsonMode = false) {
+  const apiKey = getGeminiKey();
+  if (!apiKey) throw new Error('Gemini API 키가 설정되지 않았습니다.');
+
+  const parts = [];
+  for (const file of files) {
+    parts.push({ inline_data: { mime_type: file.mime, data: file.base64 } });
+  }
+  parts.push({ text: prompt });
+
+  const body = { contents: [{ parts }] };
+  if (jsonMode) body.generationConfig = { response_mime_type: 'application/json' };
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await response.json();
+  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('AI 응답을 받지 못했습니다.');
+  return text;
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    if (file.size > 10 * 1024 * 1024) { reject(new Error('파일 크기는 10MB를 초과할 수 없습니다.')); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result.split(',')[1];
+      resolve({ mime: file.type || 'application/octet-stream', base64, name: file.name, size: file.size });
+    };
+    reader.onerror = () => reject(new Error('파일 읽기 실패'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function fileToText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('파일 읽기 실패'));
+    reader.readAsText(file);
+  });
+}
+
+function openAIModal(tab) {
+  document.getElementById('aiModal').classList.add('active');
+  switchAITab(tab || 'generate');
+  checkAPIKey();
+}
+function closeAIModal() {
+  document.getElementById('aiModal').classList.remove('active');
+  if (isRecording) stopVoiceRecording();
+}
+function switchAITab(tab) {
+  document.querySelectorAll('.ai-tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === tab));
+  document.querySelectorAll('.ai-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('aiPanel-' + tab).classList.add('active');
+}
+
+async function handleFileUpload(event, type) {
+  const file = event.target.files[0];
+  if (!file) return;
+  try {
+    let data;
+    if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+      const text = await fileToText(file);
+      data = { kind: 'text', text, name: file.name, size: file.size };
+    } else {
+      data = { kind: 'binary', ...(await fileToBase64(file)) };
+    }
+    if (type === 'resume') resumeFileData = data;
+    else jdFileData = data;
+    updateDropZone(type);
+    showToast(`${type === 'resume' ? '이력서' : '채용공고'} 업로드 완료`, 'success');
+  } catch (e) {
+    showToast('파일 업로드 실패: ' + e.message, 'error');
+  }
+}
+
+function updateDropZone(type) {
+  const data = type === 'resume' ? resumeFileData : jdFileData;
+  const zone = document.getElementById(type + 'DropZone');
+  if (!data) {
+    zone.classList.remove('has-file');
+    zone.innerHTML = `<div class="file-drop-icon">${type === 'resume' ? '📄' : '📋'}</div><div class="file-drop-text">파일 선택 또는 여기에 드래그</div><div class="file-drop-hint">PDF · JPG · PNG · TXT (최대 10MB)</div>`;
+    return;
+  }
+  zone.classList.add('has-file');
+  const sizeKB = (data.size / 1024).toFixed(1);
+  zone.innerHTML = `<div class="file-info"><div class="file-info-icon">${type === 'resume' ? '📄' : '📋'}</div><div style="flex:1;"><div class="file-info-name">${escHtml(data.name)}</div><div class="file-info-size">${sizeKB} KB</div></div><button class="file-remove-btn" onclick="event.stopPropagation();removeFile('${type}')">×</button></div>`;
+}
+
+function removeFile(type) {
+  if (type === 'resume') resumeFileData = null;
+  else jdFileData = null;
+  document.getElementById(type + 'File').value = '';
+  updateDropZone(type);
+}
+
+function toggleTextInput(id) { document.getElementById(id).classList.toggle('hidden'); }
+
+async function generateAIQuestions() {
+  if (!checkAPIKey()) { showToast('먼저 API 키를 설정하세요', 'error'); return; }
+
+  const resumeText = document.getElementById('resumeText').value.trim();
+  const jdText = document.getElementById('jdText').value.trim();
+
+  if (!resumeFileData && !resumeText) { showToast('이력서를 업로드하거나 텍스트를 입력하세요', 'error'); return; }
+  if (!jdFileData && !jdText) { showToast('채용공고를 업로드하거나 텍스트를 입력하세요', 'error'); return; }
+
+  const department = document.getElementById('department').value;
+  const position = document.getElementById('position').value.trim() || '(미입력)';
+
+  const btn = document.getElementById('generateBtn');
+  const btnText = document.getElementById('generateBtnText');
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="ai-loading"></span> 분석 중... (15-30초 소요)';
+
+  try {
+    const files = [];
+    let promptText = `당신은 한국 기업의 시니어 채용 전문가입니다. 첨부된 후보자 이력서와 채용공고를 종합 분석하여, 면접에서 사용할 맞춤형 행동 기반 질문(Behavioral Interview Questions)을 생성하세요.
+
+[직무 컨텍스트]
+- 회사: 엠아이텍 (의료기기, 비혈관 스텐트 전문)
+- 부서: ${department}
+- 지원 직무: ${position}
+
+`;
+
+    if (resumeFileData) {
+      if (resumeFileData.kind === 'text') {
+        promptText += `[후보자 이력서]\n${resumeFileData.text}\n\n`;
+      } else {
+        files.push({ mime: resumeFileData.mime, base64: resumeFileData.base64 });
+        promptText += `[후보자 이력서] (첨부 파일 참조)\n\n`;
+      }
+    } else {
+      promptText += `[후보자 이력서]\n${resumeText}\n\n`;
+    }
+
+    if (jdFileData) {
+      if (jdFileData.kind === 'text') {
+        promptText += `[채용공고 (Job Description)]\n${jdFileData.text}\n\n`;
+      } else {
+        files.push({ mime: jdFileData.mime, base64: jdFileData.base64 });
+        promptText += `[채용공고 (Job Description)] (첨부 파일 참조)\n\n`;
+      }
+    } else {
+      promptText += `[채용공고 (Job Description)]\n${jdText}\n\n`;
+    }
+
+    promptText += `[수행할 작업]
+1. 후보자의 핵심 강점, 잠재 우려사항, 검증이 필요한 영역을 파악
+2. 채용공고 요구사항과 후보자 이력의 적합도 분석
+3. 7-10개의 맞춤 면접 질문 생성 (S-T-A-R 기법 활용 가능한 행동 기반 질문)
+
+[출력 형식]
+다음 JSON 형식으로만 응답하세요. 마크다운 코드 블록 없이 순수 JSON만:
+{
+  "candidateSummary": "후보자 강점 및 우려사항 요약 (3-4문장, 한국어)",
+  "fitAnalysis": "직무 적합도 분석 (2-3문장, 한국어)",
+  "questions": [
+    {
+      "category": "역량 카테고리 (예: 목표지향, 문제해결, 리더십, 협업, 학습 등)",
+      "question": "구체적인 면접 질문 (한국어, 'OOO 경험을 말씀해주세요' 형식)",
+      "rationale": "이 질문을 추천하는 이유 (1-2문장, 한국어)",
+      "followUps": ["후속 질문1 (Situation)", "후속 질문2 (Task)", "후속 질문3 (Action)", "후속 질문4 (Result)"]
+    }
+  ]
+}`;
+
+    const result = await callGemini(promptText, files, true);
+    const parsed = JSON.parse(result);
+    renderAIQuestions(parsed);
+    showToast('✅ 맞춤 질문이 생성되었습니다', 'success');
+
+  } catch (e) {
+    console.error(e);
+    showToast('질문 생성 실패: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = '✨ 맞춤 질문 생성';
+  }
+}
+
+function renderAIQuestions(data) {
+  const container = document.getElementById('aiQuestionResults');
+  let html = `<div class="ai-result"><div class="ai-result-title">📊 분석 결과</div>`;
+
+  if (data.candidateSummary) {
+    html += `<div class="ai-summary-box"><div class="ai-summary-label">👤 후보자 요약</div><div class="ai-summary-text">${escHtml(data.candidateSummary)}</div></div>`;
+  }
+  if (data.fitAnalysis) {
+    html += `<div class="ai-summary-box"><div class="ai-summary-label">🎯 직무 적합도</div><div class="ai-summary-text">${escHtml(data.fitAnalysis)}</div></div>`;
+  }
+
+  if (data.questions && data.questions.length > 0) {
+    html += `<div style="margin-top:20px;font-size:14px;font-weight:600;color:#333;margin-bottom:12px;">💬 추천 질문 (${data.questions.length}개)</div>`;
+    data.questions.forEach((q, idx) => {
+      const followUpsHTML = (q.followUps || []).map(f => `<li>${escHtml(f)}</li>`).join('');
+      html += `<div class="ai-question-card"><div class="ai-question-card-header"><span class="ai-question-category">${escHtml(q.category || '')}</span><button class="ai-question-apply-btn" onclick='applyAIQuestion(${idx})'>✓ 평가표에 적용</button></div><div class="ai-question-text">Q. ${escHtml(q.question || '')}</div>${q.rationale ? `<div class="ai-question-rationale">💡 <strong>추천 이유:</strong> ${escHtml(q.rationale)}</div>` : ''}${followUpsHTML ? `<div class="ai-question-followups"><div class="ai-question-followups-title">🔍 후속 질문</div><ul>${followUpsHTML}</ul></div>` : ''}</div>`;
+    });
+  }
+  html += `</div>`;
+  container.innerHTML = html;
+  window._aiGeneratedQuestions = data.questions || [];
+}
+
+function applyAIQuestion(idx) {
+  const questions = window._aiGeneratedQuestions || [];
+  const q = questions[idx];
+  if (!q) return;
+
+  closeAIModal();
+
+  const depQuestions = allQuestionsData[currentDepartment] || [];
+  const commonCount = depQuestions.filter(d => d.isCommon).length;
+
+  const indexInput = prompt(
+    `이 질문을 어느 항목에 적용하시겠습니까?\n\n` +
+    depQuestions.map((d, i) => `${i + 1}. [${d.isCommon ? '공통' : '부서별'}] ${d.Attribute}`).join('\n') +
+    `\n\n번호를 입력하세요 (1-${depQuestions.length}):`,
+    String(commonCount + 1)
+  );
+  if (indexInput === null) return;
+  const idxNum = parseInt(indexInput, 10) - 1;
+  if (isNaN(idxNum) || idxNum < 0 || idxNum >= depQuestions.length) {
+    showToast('유효한 번호를 입력하세요', 'error');
+    return;
+  }
+
+  applyQuestionToAttribute(idxNum, {
+    Attribute: depQuestions[idxNum].Attribute,
+    Question: q.question,
+    FollowUpQuestions: q.followUps || [],
+    isCommon: depQuestions[idxNum].isCommon
+  });
+  showToast(`#${idxNum + 1} 항목에 질문이 적용되었습니다`, 'success');
+}
+
+function openAnalyzeForAttribute(index) {
+  currentAnalyzeIndex = index;
+  const questions = allQuestionsData[currentDepartment] || [];
+  const q = questions[index];
+  if (q) {
+    document.getElementById('analyzeQuestion').value = document.getElementById(`question-${index}`)?.textContent || q.Question;
+    document.getElementById('analyzeAttributeInfo').textContent = `평가 항목: ${q.Attribute}${q.isCommon ? ' (공통)' : ''}`;
+  }
+  document.getElementById('transcriptArea').value = document.getElementById(`memo-${index}`)?.value || '';
+  document.getElementById('aiAnalysisResults').innerHTML = '';
+  openAIModal('analyze');
+}
+
+function initVoiceRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    document.getElementById('micBtn').disabled = true;
+    document.getElementById('voiceStatus').textContent = '⚠️ 이 브라우저는 음성 인식 미지원 (Chrome/Edge 권장)';
+    return null;
+  }
+  const recognition = new SR();
+  recognition.lang = 'ko-KR';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onresult = (event) => {
+    let interim = '';
+    const area = document.getElementById('transcriptArea');
+    let finalText = area.value.replace(/\s*【인식 중\.\.\.】.*$/, '').trim();
+
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalText = (finalText + ' ' + transcript).trim();
+      } else {
+        interim += transcript;
+      }
+    }
+    area.value = finalText + (interim ? ' 【인식 중...】 ' + interim : '');
+  };
+
+  recognition.onerror = (event) => {
+    console.error('음성 인식 오류:', event.error);
+    if (event.error !== 'aborted' && event.error !== 'no-speech') {
+      showToast('음성 인식 오류: ' + event.error, 'error');
+    }
+  };
+
+  recognition.onend = () => {
+    if (isRecording) {
+      try { recognition.start(); } catch (e) {}
+    }
+  };
+
+  return recognition;
+}
+
+function toggleVoiceRecording() {
+  if (!voiceRecognition) {
+    voiceRecognition = initVoiceRecognition();
+    if (!voiceRecognition) return;
+  }
+  if (isRecording) stopVoiceRecording();
+  else startVoiceRecording();
+}
+
+function startVoiceRecording() {
+  try {
+    voiceRecognition.start();
+    isRecording = true;
+    document.getElementById('micBtn').classList.add('recording');
+    document.getElementById('voiceStatus').textContent = '🔴 녹음 중...';
+    document.getElementById('voiceStatus').classList.add('recording');
+    document.getElementById('transcriptArea').classList.add('recording');
+  } catch (e) {
+    showToast('마이크 시작 실패. 마이크 권한을 확인하세요.', 'error');
+  }
+}
+
+function stopVoiceRecording() {
+  isRecording = false;
+  if (voiceRecognition) try { voiceRecognition.stop(); } catch(e) {}
+  document.getElementById('micBtn').classList.remove('recording');
+  document.getElementById('voiceStatus').textContent = '대기 중';
+  document.getElementById('voiceStatus').classList.remove('recording');
+  document.getElementById('transcriptArea').classList.remove('recording');
+  const area = document.getElementById('transcriptArea');
+  area.value = area.value.replace(/\s*【인식 중\.\.\.】.*$/, '').trim();
+}
+
+function clearTranscript() {
+  if (isRecording) stopVoiceRecording();
+  document.getElementById('transcriptArea').value = '';
+}
+
+async function analyzeAnswer() {
+  if (!checkAPIKey()) { showToast('먼저 API 키를 설정하세요', 'error'); return; }
+  if (isRecording) stopVoiceRecording();
+
+  const question = document.getElementById('analyzeQuestion').value.trim();
+  let answer = document.getElementById('transcriptArea').value.trim();
+  answer = answer.replace(/\s*【인식 중\.\.\.】.*$/, '').trim();
+
+  if (!question) { showToast('질문을 입력하세요', 'error'); return; }
+  if (!answer) { showToast('후보자 답변을 입력하세요', 'error'); return; }
+
+  const btn = document.getElementById('analyzeBtn');
+  const btnText = document.getElementById('analyzeBtnText');
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="ai-loading"></span> 분석 중...';
+
+  try {
+    const questions = allQuestionsData[currentDepartment] || [];
+    const attrName = currentAnalyzeIndex !== null ? questions[currentAnalyzeIndex]?.Attribute : '';
+
+    const prompt = `당신은 시니어 면접 평가 전문가입니다. 다음 면접 질문에 대한 후보자의 답변을 분석하세요.
+
+[평가 항목] ${attrName || '미지정'}
+[질문] ${question}
+[지원자 답변]
+${answer}
+
+[분석 기준]
+1. STAR 프레임워크 (Situation, Task, Action, Result) 충족 여부
+2. 답변의 구체성, 논리성, 진정성
+3. 강점과 우려사항
+4. 추가 검증이 필요한 영역
+
+[평가 등급 정의]
+- Strong yes: 탁월함, 조직에 큰 기여 기대
+- Yes: 충분히 적합, 명확한 역량 입증
+- Mixed: 일부 역량 보이나 일관성 부족
+- No: 기본 수준 미달, 개선 필요
+- Strong no: 현저한 부족, 업무 수행 어려움 예상
+
+[출력 형식]
+다음 JSON 형식으로만 응답하세요. 마크다운 없이 순수 JSON만:
+{
+  "suggestedRating": "Strong yes" 또는 "Yes" 또는 "Mixed" 또는 "No" 또는 "Strong no",
+  "ratingRationale": "평가 등급을 추천하는 이유 (2-3문장, 한국어)",
+  "starCheck": {
+    "situation": { "covered": true/false, "note": "상황 묘사 평가 코멘트 (1문장)" },
+    "task": { "covered": true/false, "note": "과제/책임 명시 평가 코멘트 (1문장)" },
+    "action": { "covered": true/false, "note": "구체적 행동 묘사 평가 코멘트 (1문장)" },
+    "result": { "covered": true/false, "note": "결과/학습 명시 평가 코멘트 (1문장)" }
+  },
+  "strengths": ["답변에서 발견된 강점 (간결하게)", "강점 2"],
+  "concerns": ["우려사항 또는 부족한 점 (간결하게)", "우려 2"],
+  "followUpQuestions": [
+    "더 깊이 파고들기 위한 후속 질문 (한국어)",
+    "검증을 위한 후속 질문 (한국어)",
+    "다른 각도에서 확인할 후속 질문 (한국어)"
+  ]
+}`;
+
+    const result = await callGemini(prompt, [], true);
+    const parsed = JSON.parse(result);
+    renderAnalysisResults(parsed);
+    showToast('✅ 분석 완료', 'success');
+
+  } catch (e) {
+    console.error(e);
+    showToast('분석 실패: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = '🔍 답변 분석하기';
+  }
+}
+
+function renderAnalysisResults(data) {
+  const container = document.getElementById('aiAnalysisResults');
+  const ratingClass = (data.suggestedRating || '').toLowerCase().replace(/\s/g, '-');
+
+  let html = `<div class="ai-result"><div class="ai-result-title">📊 분석 결과</div>`;
+
+  if (data.suggestedRating) {
+    html += `<div style="margin-bottom:16px;"><div class="ai-summary-label" style="margin-bottom:8px;">🎯 추천 평가 등급</div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><div class="ai-rating-suggestion ${ratingClass}">${escHtml(data.suggestedRating)}</div><button class="ai-question-apply-btn" onclick="applyAIRating('${escHtml(data.suggestedRating)}')">✓ 이 등급으로 평가하기</button></div>${data.ratingRationale ? `<div style="font-size:12px;color:#666;margin-top:8px;line-height:1.5;">${escHtml(data.ratingRationale)}</div>` : ''}</div>`;
+  }
+
+  if (data.starCheck) {
+    html += `<div class="ai-summary-label" style="margin-bottom:8px;">⭐ STAR 프레임워크 분석</div><div class="star-grid">`;
+    const labels = { situation: 'S - Situation (상황)', task: 'T - Task (과제)', action: 'A - Action (행동)', result: 'R - Result (결과)' };
+    for (const [key, item] of Object.entries(data.starCheck)) {
+      const cls = item.covered ? 'covered' : 'missing';
+      html += `<div class="star-item ${cls}"><div class="star-letter">${escHtml(labels[key] || key)}</div><span class="star-status ${cls}">${item.covered ? '✓ 충족' : '✗ 부족'}</span><div class="star-note">${escHtml(item.note || '')}</div></div>`;
+    }
+    html += `</div>`;
+  }
+
+  if (data.strengths?.length) {
+    html += `<div style="margin-top:14px;"><div class="ai-summary-label">✅ 강점</div><ul class="strength-list">${data.strengths.map(s => `<li>${escHtml(s)}</li>`).join('')}</ul></div>`;
+  }
+  if (data.concerns?.length) {
+    html += `<div style="margin-top:14px;"><div class="ai-summary-label">⚠️ 우려사항</div><ul class="concern-list">${data.concerns.map(s => `<li>${escHtml(s)}</li>`).join('')}</ul></div>`;
+  }
+
+  if (data.followUpQuestions?.length) {
+    html += `<div style="margin-top:18px;"><div class="ai-summary-label">💬 추천 후속 질문</div>`;
+    data.followUpQuestions.forEach((q, idx) => {
+      html += `<div class="followup-suggestion-card"><div class="followup-suggestion-text">${escHtml(q)}</div><button class="followup-apply-btn" onclick='applyFollowUpQuestion(${idx})'>적용</button></div>`;
+    });
+    html += `</div>`;
+    window._aiFollowUps = data.followUpQuestions;
+  }
+
+  html += `<div style="margin-top:20px;padding-top:16px;border-top:1px solid #e0e0e0;"><button class="ai-action-btn" style="font-size:12px;padding:8px 16px;" onclick="saveAnswerToMemo()">📝 답변을 면접관 메모로 저장</button></div>`;
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+function applyAIRating(rating) {
+  if (currentAnalyzeIndex === null) { showToast('적용할 항목을 선택하세요', 'error'); return; }
+  const config = RATING_CONFIG[rating];
+  if (!config) { showToast('잘못된 평가 등급', 'error'); return; }
+
+  const dept = currentDepartment;
+  if (!evaluationData[dept]) evaluationData[dept] = [];
+  const questions = allQuestionsData[dept] || [];
+
+  evaluationData[dept][currentAnalyzeIndex] = {
+    attribute: questions[currentAnalyzeIndex]?.Attribute || '',
+    question: document.getElementById(`question-${currentAnalyzeIndex}`)?.textContent || '',
+    rating, score: config.score,
+    memo: document.getElementById(`memo-${currentAnalyzeIndex}`)?.value || ''
+  };
+
+  const container = document.getElementById(`rating-${currentAnalyzeIndex}`);
+  if (container) {
+    const opts = container.querySelectorAll('.rating-option');
+    opts.forEach(opt => opt.classList.remove('selected'));
+    const ratingLabels = Object.keys(RATING_CONFIG);
+    const idx = ratingLabels.indexOf(rating);
+    if (opts[idx]) opts[idx].classList.add('selected');
+  }
+  updateSummary();
+  showToast(`✅ "${rating}" 등급이 적용되었습니다`, 'success');
+}
+
+function applyFollowUpQuestion(idx) {
+  const followUps = window._aiFollowUps || [];
+  const q = followUps[idx];
+  if (!q || currentAnalyzeIndex === null) return;
+
+  const card = document.getElementById(`question-${currentAnalyzeIndex}`)?.closest('.attribute-card');
+  if (!card) return;
+
+  let followUpSection = card.querySelector('.follow-up-section');
+  if (!followUpSection) {
+    const html = `<div class="follow-up-section"><div class="follow-up-title">💡 후속 질문 <span style="font-size:10px;font-weight:500;color:#999;">(AI 추천)</span></div><ul class="follow-up-list"></ul></div>`;
+    card.querySelector('.question-text')?.insertAdjacentHTML('afterend', html);
+    followUpSection = card.querySelector('.follow-up-section');
+  }
+  const list = followUpSection.querySelector('.follow-up-list');
+  const li = document.createElement('li');
+  li.className = 'follow-up-item';
+  li.textContent = q;
+  list.appendChild(li);
+
+  showToast('후속 질문이 평가표에 추가되었습니다', 'success');
+}
+
+function saveAnswerToMemo() {
+  if (currentAnalyzeIndex === null) return;
+  const memoField = document.getElementById(`memo-${currentAnalyzeIndex}`);
+  let answer = document.getElementById('transcriptArea').value.trim().replace(/\s*【인식 중\.\.\.】.*$/, '').trim();
+  if (!answer) { showToast('저장할 답변이 없습니다', 'error'); return; }
+  const existing = memoField.value.trim();
+  memoField.value = existing ? existing + '\n\n--- AI 분석 답변 ---\n' + answer : answer;
+  showToast('✅ 답변이 면접관 메모에 저장되었습니다', 'success');
+}
+
+function escHtml(str) {
+  return (str == null ? '' : String(str)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function showToast(message, type) {
+  const toast = document.getElementById('toast');
+  toast.className = 'toast show' + (type ? ' ' + type : '');
+  toast.textContent = message;
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => { toast.className = 'toast'; }, 3500);
+}
+
+function setupDragDrop() {
+  ['resume', 'jd'].forEach(type => {
+    const zone = document.getElementById(type + 'DropZone');
+    if (!zone) return;
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.style.borderColor = '#764ba2'; zone.style.background = '#f8f7ff'; });
+    zone.addEventListener('dragleave', (e) => { e.preventDefault(); if (!zone.classList.contains('has-file')) { zone.style.borderColor = ''; zone.style.background = ''; } });
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (!file) return;
+      const input = document.getElementById(type + 'File');
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change'));
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('interviewDate').valueAsDate = new Date();
+  const settings = lsGet('settings', {}) || {};
+  if (settings.companyName) {
+    document.querySelector('.header h1').textContent = `면접 평가표 · ${settings.companyName}`;
+  }
+  loadAllDepartments();
+  setupDragDrop();
+});
+</script>
+</body>
+</html>
